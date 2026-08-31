@@ -11,6 +11,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # State Management & UI Binding
+  provider: ^6.1.2
+
   # UI Icons & Design System
   cupertino_icons: ^1.0.8
 
