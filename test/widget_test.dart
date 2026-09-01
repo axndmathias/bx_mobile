@@ -8,20 +8,16 @@ void main() {
   ) async {
     // Initialisiert die Abhängigkeiten für den Test
     final dependencies = AppDependencies();
-
-    // Für Tests mocken/initialisieren wir hier minimal oder rufen init auf,
-    // falls das Test-Setup eine echte lokale Datei/Storage erlaubt.
-    // Hinweis: Für reine Widget-Tests ohne echtes SecureStorage kann man mocken,
-    // aber schauen wir, wie sich das AppDependencies-Objekt verhält:
     await dependencies.init();
 
-    // App mit dem initialisierten AuthNotifier bauen
-    await tester.pumpWidget(
-      BxMobileApp(authNotifier: dependencies.authNotifier),
-    );
+    // App mit den initialisierten Abhängigkeiten bauen
+    await tester.pumpWidget(BxMobileApp(appDependencies: dependencies));
 
-    // Überprüft, ob der Titel des Login-Bildschirms angezeigt wird
-    expect(find.text('Bexio ERP Mobile Suite'), findsOneWidget);
-    expect(find.text('Demo-Modus starten'), findsOneWidget);
+    // Warten, bis der initiale Async-Check (checkStoredSession) abgeschlossen ist
+    await tester.pumpAndSettle();
+
+    // Überprüft, ob die exakten Texte des Login-Bildschirms angezeigt werden
+    expect(find.text('Bexio ERP Suite'), findsOneWidget);
+    expect(find.text('Demo-Modus starten (Bexio Sandbox)'), findsOneWidget);
   });
 }
