@@ -1,30 +1,27 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
+import 'package:bx_mobile/app_dependencies.dart';
+import 'package:bx_mobile/main.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:bx_mobile/main.dart';
-
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('BXMobile startet und zeigt den Login-Bildschirm an', (
+    WidgetTester tester,
+  ) async {
+    // Initialisiert die Abhängigkeiten für den Test
+    final dependencies = AppDependencies();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Für Tests mocken/initialisieren wir hier minimal oder rufen init auf,
+    // falls das Test-Setup eine echte lokale Datei/Storage erlaubt.
+    // Hinweis: Für reine Widget-Tests ohne echtes SecureStorage kann man mocken,
+    // aber schauen wir, wie sich das AppDependencies-Objekt verhält:
+    await dependencies.init();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // App mit dem initialisierten AuthNotifier bauen
+    await tester.pumpWidget(
+      BxMobileApp(authNotifier: dependencies.authNotifier),
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Überprüft, ob der Titel des Login-Bildschirms angezeigt wird
+    expect(find.text('Bexio ERP Mobile Suite'), findsOneWidget);
+    expect(find.text('Demo-Modus starten'), findsOneWidget);
   });
 }
